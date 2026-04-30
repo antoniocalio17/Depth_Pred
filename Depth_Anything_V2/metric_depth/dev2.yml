@@ -1,0 +1,4 @@
+name: dev2
+channels:
+  - defaults
+prefix: /opt/miniconda3/envs/dev2

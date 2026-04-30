@@ -1,0 +1,9 @@
+*.png
+*.jpeg
+*.jpg
+*.pyc
+*.npy
+*.mp4
+*.pth
+__pycache__/
+*.py[cod]
