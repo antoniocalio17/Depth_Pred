@@ -7,3 +7,4 @@
 *.pth
 __pycache__/
 *.py[cod]
+data/
