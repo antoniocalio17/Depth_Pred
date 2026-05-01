@@ -53,8 +53,15 @@ class DepthDecoder(nn.Module):
         self.fuse0 = FusionBlock(enc_ch, out_ch)        # 74→148
 
     def forward(self, f0, f1, f2, f3):
+        """
+        REMIND :
+        Since the class inherits from nn.Module, 
+        its instances are callable (module(...)), 
+        and this triggers __call__, 
+        which then runs forward(...) with the provided tensors.
+        """
         x = self.bottleneck(f3)     # (B, 256, 19,  19)
-        x = self.fuse2(x, f2)      # (B, 256, 37,  37)
+        x = self.fuse2(x, f2)      # (B, 256, 37,  37) 
         x = self.fuse1(x, f1)      # (B, 256, 74,  74)
         x = self.fuse0(x, f0)      # (B, 128, 148, 148)
         return x

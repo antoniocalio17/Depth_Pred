@@ -1,0 +1,31 @@
+name: depth-seg-hpc
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pytorch
+  - torchvision
+  - pytorch-cuda=12.1
+  - numpy
+  - scipy
+  - h5py
+  - pandas
+  - pyyaml
+  - tqdm
+  - opencv
+  - matplotlib
+  - pillow
+  - open3d
+  - mlflow
+  - tensorboard
+  - jupyterlab
+  - ipykernel
+epth_Anything_V2/app.py
+  - gradio=4.29.0
+  - pip:
+      - gradio_imageslider
+      - rtmlib
+ 
