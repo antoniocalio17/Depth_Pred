@@ -1,4 +1,4 @@
-name: depth-seg-hpc
+name: depth-hpc
 channels:
   - pytorch
   - nvidia
@@ -6,26 +6,25 @@ channels:
 dependencies:
   - python=3.10
   - pip
-  - pytorch
-  - torchvision
+  - pytorch=2.4.1
+  - torchvision=0.19.1
+  - torchaudio=2.4.1
   - pytorch-cuda=12.1
-  - numpy
-  - scipy
-  - h5py
-  - pandas
-  - pyyaml
-  - tqdm
-  - opencv
-  - matplotlib
-  - pillow
-  - open3d
-  - mlflow
-  - tensorboard
-  - jupyterlab
-  - ipykernel
-epth_Anything_V2/app.py
-  - gradio=4.29.0
   - pip:
-      - gradio_imageslider
-      - rtmlib
- 
+      - numpy<2
+      - scipy
+      - pandas
+      - matplotlib
+      - tqdm
+      - pyyaml
+      - pillow
+      - h5py
+      - scikit-learn
+      - scikit-image
+      - tensorboard
+      - jupyter
+      - ipykernel
+      - opencv-python-headless==4.10.0.84
+      - timm
+      - einops
+      - safetensors
