@@ -70,33 +70,42 @@ class DepthDecoder(nn.Module):
 class DepthHead(nn.Module):
     """
     Converte la feature map del decoder in una depth map metrica in metri.
-    Softplus garantisce output sempre positivo.
+    Output bounded in [min_depth, max_depth] tramite sigmoid scalata.
     """
-    def __init__(self, in_ch: int = 128, max_depth: float = 10.0):
+    def __init__(self, in_ch: int = 128, min_depth: float = 0.1, max_depth: float = 10.0):
         super().__init__()
+        if not (max_depth > min_depth > 0):
+            raise ValueError("Expected max_depth > min_depth > 0")
+        self.min_depth = min_depth
         self.max_depth = max_depth
         self.head = nn.Sequential(
             _conv_bn_relu(in_ch, 64),
             _conv_bn_relu(64, 32),
             nn.Conv2d(32, 1, kernel_size=1),
         )
-        self.act = nn.Softplus()
 
     def forward(self, features, original_size):
         # features     : (B, in_ch, 148, 148)
         # original_size: (H_orig, W_orig)
-        x = self.head(features)             # (B, 1, 148, 148)
-        x = self.act(x).clamp(max=self.max_depth)
+        x = self.head(features)  # (B, 1, 148, 148)
+        x = torch.sigmoid(x)
+        x = x * (self.max_depth - self.min_depth) + self.min_depth
         x = F.interpolate(x, size=original_size, mode="bilinear", align_corners=False)
-        return x                            # (B, 1, H_orig, W_orig) in metri
+        return x  # (B, 1, H_orig, W_orig) in metri
 
 
 class DepthDecoderHead(nn.Module):
     """Wrapper unico per training e inference."""
-    def __init__(self, enc_ch: int = 256, dec_out_ch: int = 128, max_depth: float = 10.0):
+    def __init__(
+        self,
+        enc_ch: int = 256,
+        dec_out_ch: int = 128,
+        min_depth: float = 0.1,
+        max_depth: float = 10.0,
+    ):
         super().__init__()
         self.decoder = DepthDecoder(enc_ch=enc_ch, out_ch=dec_out_ch)
-        self.head    = DepthHead(in_ch=dec_out_ch, max_depth=max_depth)
+        self.head = DepthHead(in_ch=dec_out_ch, min_depth=min_depth, max_depth=max_depth)
 
     def forward(self, f0, f1, f2, f3, original_size):
         features = self.decoder(f0, f1, f2, f3)
